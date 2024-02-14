@@ -108,12 +108,12 @@ jobs:
         git config --global user.name "Carlo Dandan"
         git config --global user.email "jasminecarlo01@gmail.com"
         git clone https://gitlab.com/OrangeFox/sync.git
+        
+    - name: Repo Sync
+      run: |
         cd sync
         ./orangefox_sync.sh --branch ${{ github.event.inputs.MANIFEST_BRANCH }} --path ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}
 
-    - name: Repo Sync
-      run: |
-        repo sync -j$(nproc --all) --force-sync
       working-directory: workspace
 
     - name: Create roomservice.xml
