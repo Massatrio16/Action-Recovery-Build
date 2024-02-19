@@ -43,7 +43,7 @@ on:
         - recovery
         - vendor_boot
         required: true
-        default: recovery
+        default: vendor_boot
       RECOVERY_INSTALLER:
         description: Include recovery installer zip
         type: boolean
