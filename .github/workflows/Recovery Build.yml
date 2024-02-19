@@ -112,6 +112,7 @@ jobs:
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
       
+ 
     - name: Initialize repo
       run: |
         mkdir workspace
@@ -119,8 +120,7 @@ jobs:
         git config --global user.name "${GITHUB_ACTOR}"
         git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
         repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_${{ steps.buildtree.outputs.value }}.git -b twrp-${{ inputs.MANIFEST_BRANCH }}
-        #repo init --depth=1 -u https://github.com/PitchBlackRecoveryProject/manifest_pb.git -b android-${{ inputs.MANIFEST_BRANCH }}
-          # Initialize the latest stable branch
+          
 
     - name: Repo Sync
       run: |
