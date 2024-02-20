@@ -1,4 +1,4 @@
-name: Recovery Build
+name: Recovery Build & share
 
 on:
   workflow_dispatch:
@@ -263,6 +263,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Sharing Build
+   - name: Sharing Build
       run: |
         curl -LSs "https://raw.githubusercontent.com/kzsaaf3e/notify-pfdx/main/pfdx/pinkfoxdx.sh" | bash -
