@@ -264,7 +264,3 @@ jobs:
           Target: ${{ inputs.BUILD_TARGET }}.img
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-   - name: Sharing Build
-      run: |
-        curl -LSs "https://raw.githubusercontent.com/kzsaaf3e/notify-pfdx/main/pfdx/pinkfoxdx.sh" | bash -
