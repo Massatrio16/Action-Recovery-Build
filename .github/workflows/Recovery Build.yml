@@ -1,4 +1,4 @@
-name: Recovery Build & share
+name: [ ↑↓ ] Recovery Builder
 
 on:
   workflow_dispatch:
@@ -58,6 +58,17 @@ jobs:
       contents: write
     # You can use either of the ubuntu-20.04 or ubuntu-22.04 runner
     steps:
+    - name: Notify Building Environment(1/3)
+      run: |
+
+        # Before sending the curl request, make sure to set the bot token:
+        export TELEGRAM_BOT_TOKEN=6788930639:AAHpp3siVn8wnWp3SGOM_uC2EDFaXWjyE6I 
+      
+        curl -X POST \
+             -H 'Content-Type: application/json' \
+             -d '{"message_thread_id": "287", "chat_id": "-1001805014416_287", "text": "Setting Environment Build TWRP For ${{ inputs.DEVICE_NAME }} ", "disable_notification": false}' \
+             https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
+        
     - name: Display Run Parameters
       run: |
         echo "::group::User Environment Variables"
@@ -225,6 +236,17 @@ jobs:
         cd /usr/bin
         sudo ln -sf python2 python
 
+    - name: Notify Building Progress (2/3)
+      run: |
+
+        # Before sending the curl request, make sure to set the bot token:
+        export TELEGRAM_BOT_TOKEN=6788930639:AAHpp3siVn8wnWp3SGOM_uC2EDFaXWjyE6I 
+      
+        curl -X POST \
+             -H 'Content-Type: application/json' \
+             -d '{"message_thread_id": "287", "chat_id": "-1001805014416_287", "text": "Building TWRP For ${{ inputs.DEVICE_NAME }}....", "disable_notification": false}' \
+             https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
+
     - name: Building recovery (AOSP)
       if: ${{ steps.buildtree.outputs.value == 'aosp' }} 
       run: |
@@ -265,7 +287,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Nofify Update To PinkToxDX
+    - name: Notify Release Download Link (3/3)
       run: |
         # Notify
   
