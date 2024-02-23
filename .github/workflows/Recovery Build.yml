@@ -34,7 +34,7 @@ on:
       TESTER_USN:
         description: Tester Username
         required: false
-        default: tester
+        default: migikata
       REPOPICK_PATCHES:
         description: (Optional) Gerrit commit numbers separated by a space to be included in the build (leave blank if not using)
         type: string
