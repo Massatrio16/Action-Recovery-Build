@@ -49,6 +49,10 @@ on:
         type: boolean
         required: true
         default: false
+      TESTER_USN:
+        description: Tester Username ( Support Multiple Usn )
+        required: true
+        default: @tester1, @tester2
 
 jobs:
   build:
@@ -296,6 +300,6 @@ jobs:
 
         # Sending the curl request: 
         curl -X POST -H 'Content-Type: application/json' \
-        -d '{"message_thread_id": "287", "chat_id": "-1001805014416_287", "text":"New Build S665L TWRP Recovery!!!, Coba Dong @migikata", "reply_markup": {"inline_keyboard": [[{"text":"Release Tag : ${{ github.run_id }}", "url": "https://github.com/Massatrio16/Action-Recovery-Build/releases/tag/${{ github.run_id }}"}]]} }' \
+        -d '{"message_thread_id": "287", "chat_id": "-1001805014416_287", "text":"New Build TWRP Recovery For ${{ inputs.DEVICE_NAME }}!!!, Coba Dong ${{ inputs.TESTER_USN }}", "reply_markup": {"inline_keyboard": [[{"text":"Release Tag : ${{ github.run_id }}", "url": "https://github.com/Massatrio16/Action-Recovery-Build/releases/tag/${{ github.run_id }}"}]]} }' \
         https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
         
