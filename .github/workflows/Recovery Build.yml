@@ -18,7 +18,7 @@ on:
       DEVICE_TREE_URL:
         description: Device Tree URL
         required: true
-        default: https://github.com/Massatrio16/Tes
+        default: https://github.com/Massatrio16/Tes2
       DEVICE_TREE_BRANCH:
         description: Device Tree Branch
         required: true
