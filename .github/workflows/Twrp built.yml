@@ -14,7 +14,7 @@ on:
         - 7.1
         - 6.0
         required: true
-        default: 12.1
+        default: 11
       DEVICE_TREE_URL:
         description: Device Tree URL
         required: true
