@@ -1,4 +1,4 @@
-name: Recovery Build
+name: Recovery Builder & Share V2
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ on:
       DEVICE_TREE_BRANCH:
         description: Device Tree Branch
         required: true
-        default: android12
+        default: android-12.3
       DEVICE_PATH:
         description: Path the device tree should be synced to, relative to source root
         required: true
@@ -31,6 +31,10 @@ on:
         description: Device Name from tree (should match name on twrp_<DEVICE_NAME>.mk)
         required: true
         default: A666LN
+      TESTER_USN:
+        description: Tester Username
+        required: false
+        default: kakvandu
       REPOPICK_PATCHES:
         description: (Optional) Gerrit commit numbers separated by a space to be included in the build (leave blank if not using)
         type: string
@@ -54,8 +58,21 @@ jobs:
   build:
     if: github.event.repository.owner.id == github.event.sender.id
     runs-on: ubuntu-20.04
+    permissions:
+      contents: write
     # You can use either of the ubuntu-20.04 or ubuntu-22.04 runner
     steps:
+    - name: Notify Building Environment(1/3)
+      run: |
+
+        # Before sending the curl request, make sure to set the bot token:
+        export TELEGRAM_BOT_TOKEN=6788930639:AAHpp3siVn8wnWp3SGOM_uC2EDFaXWjyE6I 
+      
+        curl -X POST \
+             -H 'Content-Type: application/json' \
+             -d '{ "chat_id": "-1002082174650", "text": "Setting Environment Build TWRP For ${{ inputs.DEVICE_NAME }} ", "disable_notification": false}' \
+             https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
+        
     - name: Display Run Parameters
       run: |
         echo "::group::User Environment Variables"
@@ -112,6 +129,7 @@ jobs:
         chmod a+x ~/bin/repo
         sudo ln -sf ~/bin/repo /usr/bin/repo
       
+ 
     - name: Initialize repo
       run: |
         mkdir workspace
@@ -120,6 +138,7 @@ jobs:
         git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
         repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_${{ steps.buildtree.outputs.value }}.git -b twrp-${{ inputs.MANIFEST_BRANCH }}
           
+
     - name: Repo Sync
       run: |
         repo sync -j$(nproc --all) --force-sync
@@ -143,20 +162,14 @@ jobs:
         repo sync -j$(nproc --all)
       working-directory: workspace
 
-    - name: Clone device tree (Github/Other)
+    - name: Clone device tree (Github)
       if: |
         !contains( inputs.DEVICE_TREE_URL,'/TeamWin/' )
         && steps.buildtree.outputs.value == 'aosp'
       run: |
-        REMOTE_NAME=$(grep -oP '(?<=://).*(?=\.)' <<< ${{ inputs.DEVICE_TREE_URL }})
-        REMOTE_FETCH=$(grep -oP '(?<=://).*?(?=\/)' <<< ${{ inputs.DEVICE_TREE_URL }})
-        if [ "${REMOTE_NAME}" != "github" ]; then
-          sed -i "s%\!--remote name=\"{REMOTE_NAME}%remote name=\"${REMOTE_NAME}%g" .repo/local_manifests/roomservice.xml
-          sed -i "s%{REMOTE_FETCH}\"/-->%${REMOTE_FETCH}\"/>%g" .repo/local_manifests/roomservice.xml
-        fi
-        sed -i "s%\!--project name=\"{DEVICE_TREE_URL_REPO}%project name=\"$(grep -oP "(?<=${REMOTE_FETCH}/).*" <<< ${{ inputs.DEVICE_TREE_URL }})%g" .repo/local_manifests/roomservice.xml
+        sed -i "s%\!--project name=\"{DEVICE_TREE_URL_REPO}%project name=\"$(grep -oP '(?<=github.com/).*' <<< ${{ inputs.DEVICE_TREE_URL }})%g" .repo/local_manifests/roomservice.xml
         sed -i "s%{DEVICE_PATH}%${{ inputs.DEVICE_PATH }}%g" .repo/local_manifests/roomservice.xml
-        sed -i "s%{DEVICE_REMOTE_NAME}%${REMOTE_NAME}%g" .repo/local_manifests/roomservice.xml
+        sed -i "s%{DEVICE_REMOTE_NAME}%github%g" .repo/local_manifests/roomservice.xml
         sed -i "s%{DEVICE_TREE_BRANCH}\"/-->%${{ inputs.DEVICE_TREE_BRANCH }}\"/>%g" .repo/local_manifests/roomservice.xml
         repo sync -j$(nproc --all)
       working-directory: workspace
@@ -227,6 +240,17 @@ jobs:
         cd /usr/bin
         sudo ln -sf python2 python
 
+    - name: Notify Building Progress (2/3)
+      run: |
+
+        # Before sending the curl request, make sure to set the bot token:
+        export TELEGRAM_BOT_TOKEN=6788930639:AAHpp3siVn8wnWp3SGOM_uC2EDFaXWjyE6I 
+      
+        curl -X POST \
+             -H 'Content-Type: application/json' \
+             -d '{"chat_id": "-1002082174650", "text": "Building TWRP For ${{ inputs.DEVICE_NAME }}....", "disable_notification": false}' \
+             https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
+
     - name: Building recovery (AOSP)
       if: ${{ steps.buildtree.outputs.value == 'aosp' }} 
       run: |
@@ -266,3 +290,16 @@ jobs:
           Target: ${{ inputs.BUILD_TARGET }}.img
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Notify Release Download Link (3/3)
+      run: |
+        # Notify
+  
+        # Before sending the curl request, make sure to set the bot token:
+        export TELEGRAM_BOT_TOKEN=6788930639:AAHpp3siVn8wnWp3SGOM_uC2EDFaXWjyE6I 
+
+        # Sending the curl request: 
+        curl -X POST -H 'Content-Type: application/json' \
+        -d '{ "chat_id": "-1002082174650", "text":"New Build TWRP Recovery For ${{ inputs.DEVICE_NAME }}!!!, Coba Dong @${{ inputs.TESTER_USN }}", "reply_markup": {"inline_keyboard": [[{"text":"Release Tag : ${{ github.run_id }}", "url": "https://github.com/Massatrio16/Action-Recovery-Build/releases/download/${{ github.run_id }}/vendor_boot.img"}]]} }' \
+        https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
+        
