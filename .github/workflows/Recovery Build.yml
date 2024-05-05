@@ -18,11 +18,11 @@ on:
       DEVICE_TREE_URL:
         description: Device Tree URL
         required: true
-        default: https://github.com/Massatrio16/Tes2
+        default: https://github.com/Massatrio16/Ite
       DEVICE_TREE_BRANCH:
         description: Device Tree Branch
         required: true
-        default: android-12
+        default: android-12.1
       DEVICE_PATH:
         description: Path the device tree should be synced to, relative to source root
         required: true
@@ -34,7 +34,7 @@ on:
       TESTER_USN:
         description: Tester Username
         required: false
-        default: migikata
+        default: farispm
       REPOPICK_PATCHES:
         description: (Optional) Gerrit commit numbers separated by a space to be included in the build (leave blank if not using)
         type: string
