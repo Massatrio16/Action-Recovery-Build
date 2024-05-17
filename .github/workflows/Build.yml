@@ -71,7 +71,7 @@ jobs:
       
         curl -X POST \
              -H 'Content-Type: application/json' \
-             -d '{ "chat_id": "6561499315", "text": "Setting Environment Build TWRP For ${{ inputs.DEVICE_NAME }} ", "disable_notification": false}' \
+             -d '{ "chat_id": "6561499315", "text": "Setting Environment Build TWRP For \n ${{ inputs.DEVICE_NAME }} ", "disable_notification": false}' \
              https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
         
     - name: Display Run Parameters
