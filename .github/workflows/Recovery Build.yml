@@ -53,6 +53,10 @@ on:
         type: boolean
         required: true
         default: false
+        Changelog:
+        description: changlog
+        required: false
+        default: changelog : 
 
 jobs:
   build:
@@ -300,6 +304,6 @@ jobs:
 
         # Sending the curl request: 
         curl -X POST -H 'Content-Type: application/json' \
-        -d '{ "chat_id": "-1002082174650", "text":"New Build TWRP Recovery For ${{ inputs.DEVICE_NAME }}!!!, Coba Dong @${{ inputs.TESTER_USN }},  Changelog : ${{input.Changlog}} ", "reply_markup": {"inline_keyboard": [[{"text":"Release Tag : ${{ github.run_id }}", "url": "https://github.com/Massatrio16/Action-Recovery-Build/releases/download/${{ github.run_id }}/vendor_boot.img"}]]} }' \
+        -d '{ "chat_id": "-1002082174650", "text":"New Build TWRP Recovery For ${{ inputs.DEVICE_NAME }}!!!, Coba Dong @${{ inputs.TESTER_USN }},  ${{input.Changlog}} ", "reply_markup": {"inline_keyboard": [[{"text":"Release Tag : ${{ github.run_id }}", "url": "https://github.com/Massatrio16/Action-Recovery-Build/releases/download/${{ github.run_id }}/vendor_boot.img"}]]} }' \
         https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage
         
