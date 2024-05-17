@@ -31,9 +31,9 @@ on:
         description: Device Name from tree (should match name on twrp_<DEVICE_NAME>.mk)
         required: true
         default: S665L
-        CHANGE_LOG:
+      CHANGE_LOG:
         description: changlog
-        type: string
+        default: 
         required: false
       TESTER_USN:
         description: Tester Username
