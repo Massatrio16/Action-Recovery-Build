@@ -35,10 +35,6 @@ on:
         description: Tester Username
         required: false
         default: farispm
-        Changelog:
-        description: changlog
-        required: false
-        default: 
       REPOPICK_PATCHES:
         description: (Optional) Gerrit commit numbers separated by a space to be included in the build (leave blank if not using)
         type: string
